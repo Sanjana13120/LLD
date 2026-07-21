@@ -51,7 +51,6 @@ class ReportService:
 # Software entities should be open for extension but closed for modification.
 # New functionality should be added by creating new classes rather than modifying existing code.
 
-
 # BAD: Need to modify class for new types
 class BadPayment():
     def pay(self, payment_type):
@@ -111,8 +110,105 @@ class Penguin(Bird):
 
 
 # =======================
-# MAIN (TESTING)
+# 4. INTERFACE SEGREGATION PRINCIPLE (ISP)
 # =======================
+
+# A class should not be forced to implement methods that it does not need.
+
+# BAD: Fat interface
+class BadWorker(ABC):
+    @abstractmethod
+    def work(self):
+        pass
+
+    @abstractmethod
+    def eat(self):
+        pass
+
+class BadHumanWorker(BadWorker):
+    def work(self):
+        print("Human is working")
+    
+    def eat(self):
+        print("Human is eating")
+
+class BadRobotWorker(BadWorker):
+    def work(self):
+        print("Robot is working")
+    
+    def eat(self):
+        raise Exception("Robot cannot eat")
+
+# GOOD: Split interfaces
+class Workable(ABC):
+    @abstractmethod
+    def work(self):
+        pass
+
+class Eatable(ABC):
+    @abstractmethod
+    def eat():
+        pass
+
+class Human(Workable,Eatable):
+    def work(self):
+        print("Human is working")
+    
+    def eat(self):
+        print("Human is eating")
+
+class Robot(Workable):
+    def work(self):
+        print("Robot is working")
+     
+# =======================
+# 5. DEPENDENCY INVERSION PRINCIPLE (DIP)
+# =======================
+
+# High-level modules should not depend on low-level modules. Both should depend on abstractions.
+
+#Dependencies should be injected from outside. ~ Dependency Injection
+
+# BAD: Tight coupling
+
+class BadKeyboard:
+    def type(self):
+        print("Typing with Keyboard")
+
+class BadComputer:
+    def __init__(self):
+        self.keyboard=BadKeyboard()
+
+    def start(self):
+        self.keyboard.type()
+ 
+# GOOD: Depend on abstraction --> Computer depends on the Keyboard abstraction instead of depending directly on MechanicalKeyboard
+# or WirelessKeyboard. New keyboards can be added without modifying the Computer class.
+
+class Keyboard(ABC):
+    @abstractmethod
+    def type(self):
+        pass
+
+class MechanicalKeyboard(Keyboard):
+    def type(self):
+        print("Typing with mechanical keyboard")
+
+class WirelessKeyboard(Keyboard):
+    def type(self):
+        print("Typing with wireless keyboard")
+
+class Computer:
+    def __init__(self,keyboard:Keyboard):
+        self.keyboard=keyboard
+    
+    def start(self):
+        self.keyboard.type()
+        
+
+# ============================
+# MAIN (TESTING)
+# ============================
 
 if __name__=="__main__":
     #SRP
@@ -140,5 +236,22 @@ if __name__=="__main__":
     #LSP good
     bird: FlyingBird = Sparrow()
     bird.fly() 
+
+    #ISP 
+    human=Human()
+    human.work()
+    human.eat()
+
+    robot=Robot()
+    robot.work()
+
+    #DIP
+    computer1= Computer(MechanicalKeyboard())
+    computer1.start()
+
+    computer2= Computer(WirelessKeyboard())
+    computer2.start()
+
+    
 
     
