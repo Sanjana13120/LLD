@@ -1,0 +1,19 @@
+[2026-09-16 12:40:46] [INFO] [app] Application started
+[2026-09-16 12:40:46] [WARN] [app] Low memory
+[2026-09-16 12:40:46] [ERROR] [app] Something went wrong
+[2026-09-16 12:40:46] [FATAL] [app] Critical failure
+[2026-09-16 12:42:43] [INFO] [app] Application started
+[2026-09-16 12:42:43] [WARN] [app] Low memory
+[2026-09-16 12:42:43] [ERROR] [app] Something went wrong
+[2026-09-16 12:42:43] [FATAL] [app] Critical failure
+[2026-09-16 12:44:25] [INFO] [app] Application started
+[2026-09-16 12:44:25] [WARN] [app] Low memory
+[2026-09-16 12:44:25] [ERROR] [app] Something went wrong
+[2026-09-16 12:44:25] [FATAL] [app] Critical failure
+[2026-09-16 12:44:39] [WARN] [app] Low memory
+[2026-09-16 12:44:39] [ERROR] [app] Something went wrong
+[2026-09-16 12:44:39] [FATAL] [app] Critical failure
+[2026-09-16 12:50:36] [INFO] [app] Application started
+[2026-09-16 12:50:36] [WARN] [app] Low memory
+[2026-09-16 12:50:36] [ERROR] [app] Something went wrong
+[2026-09-16 12:50:36] [FATAL] [app] Critical failure
