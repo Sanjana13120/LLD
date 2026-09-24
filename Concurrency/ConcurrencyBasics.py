@@ -35,6 +35,7 @@ class LockDemo:
             with self.lock:
                 self.counter += 1
 
+
 # ============================================================
 # 2. RLock / Reentrant Lock:
 # ============================================================
@@ -44,6 +45,7 @@ class LockDemo:
 # - Useful when a locked method calls another method that needs the same lock.
 # - Prevents self-deadlock in such cases
 # - "Lock cannot be acquired twice by the same thread, so doing so can cause self-deadlock. RLock allows the owning thread to acquire it multiple times and keeps an acquisition count."
+
 
 class Account:
     def __init__(self):
@@ -56,6 +58,7 @@ class Account:
     def validate(self):
         with self.rlock:
             print("Validated")
+
 
 # ============================================================
 # 3. Condition Variable
@@ -114,6 +117,7 @@ class Account:
 # Common use:
 # - Limit DB connections / API calls / resource access.
 
+
 class SemaphoreDemo:
     def __init__(self):
         self.semaphore = threading.Semaphore(3)
@@ -122,6 +126,7 @@ class SemaphoreDemo:
         with self.semaphore:
             print("Using resource")
             time.sleep(2)
+
 
 # ============================================================
 # 5. Deadlock
@@ -149,8 +154,57 @@ class SemaphoreDemo:
 # - Prevention = how we avoid/break those conditions.
 
 
+# ============================================================
+# Ordered Execution using Semaphores
+# ============================================================
+# Goal:
+# - Multiple threads may start in any order.
+# - But execution must happen in a fixed order: A → B → C.
+#
+# Semaphore is used as a "permission/token" here.
+#
+# Initial state:
+# - A = 1 → A can proceed
+# - B = 0 → B must wait
+# - C = 0 → C must wait
+#
+# Flow:
+#   A acquires A → executes → releases B
+#   B acquires B → executes → releases C
+#   C acquires C → executes
+#
+# Important:
+# - Here Semaphore is being used for coordination/order,
+#   not just for limiting the number of concurrent threads.
+
+class OrderedExecution:
+    def __init__(self):
+        self.a = threading.Semaphore(1)
+        self.b = threading.Semaphore(0)
+        self.c = threading.Semaphore(0)
+
+    def execute_a(self):
+        self.a.acquire()
+        print("A")
+        self.b.release()
+
+    def execute_b(self):
+        self.b.acquire()
+        print("B")
+        self.c.release()
+
+    def execute_c(self):
+        self.c.acquire()
+        print("C")
+
+
+# ============================================================
+# MAIN
+# ============================================================
+
+
 def main():
-    #lock
+    # lock
     lock_demo = LockDemo()
     threads = []
 
@@ -164,7 +218,7 @@ def main():
 
     print("Final counter:", lock_demo.counter)
 
-    #rlock
+    # rlock
 
     rlock_demo = Account()
 
@@ -172,7 +226,7 @@ def main():
     t1.start()
     t1.join()
 
-    #semaphore
+    # semaphore
     semaphore_demo = SemaphoreDemo()
     threads_semaphore = []
     for i in range(5):
@@ -183,7 +237,24 @@ def main():
     for t in threads_semaphore:
         t.join()
 
+    # ordered execution
 
+    print("\n--- Ordered Execution ---")
+
+    ordered = OrderedExecution()
+
+    t1 = threading.Thread(target=ordered.execute_b)
+    t2 = threading.Thread(target=ordered.execute_c)
+    t3 = threading.Thread(target=ordered.execute_a)
+
+    t1.start()
+    t2.start()
+    t3.start()
+
+    t1.join()
+    t2.join()
+    t3.join()
+        
 
 if __name__ == "__main__":
     main()
